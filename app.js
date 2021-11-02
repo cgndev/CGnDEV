@@ -15,7 +15,7 @@ class App {
         window.addEventListener('resize', this.resize.bind(this), false );
         this.resize();
 
-        this.circle = new Circle(this.stageWidth, this.stageHeight, 60, 15);
+        this.circle = new Circle(this.stageWidth, this.stageHeight, 200, 15);
 
         window.requestAnimationFrame(this.animate.bind(this));
     }
@@ -34,6 +34,8 @@ class App {
     animate(t)
     {
         window.requestAnimationFrame(this.animate.bind(this));
+
+        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight );
 
         this.circle.draw(this.ctx, this.stageWidth, this.stageHeight);
     }

@@ -12,8 +12,8 @@ export class Circle {
 
     draw( ctx, stageWidth, stageHeight)
     {
-        this.x += this.vx;
-        this.y += this.vy;
+        this.x += 0;
+        this.y += 0;
 
         ctx.fillStle = '#000000';
         ctx.beginPath();
