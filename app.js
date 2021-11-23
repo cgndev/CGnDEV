@@ -1,46 +1,20 @@
-// Interactive Developer 채널 스터디
+const title = document.querySelector("div.hello:first-child h1");
+console.log(title);
+title.innerText = "Hello, Inside!";
+title.style.color = "blue";
 
-import {
-    Circle
-} from './circle.js';
-
-class App {
-    constructor()
-    {
-        this.canvas = document.createElement('canvas');
-        this.ctx = this.canvas.getContext('2d');
-
-        document.body.appendChild(this.canvas);
-
-        window.addEventListener('resize', this.resize.bind(this), false );
-        this.resize();
-
-        this.circle = new Circle(this.stageWidth, this.stageHeight, 200, 15);
-
-        window.requestAnimationFrame(this.animate.bind(this));
-    }
-
-    resize()
-    {
-        this.stageWidth = document.body.clientWidth;
-        this.stageHeight = document.body.clientHeight;
-
-        this.canvas.width = this.stageWidth * 2;
-        this.canvas.height = this.stageHeight * 2;
-
-        this.ctx.scale(2 , 2);
-    }
-
-    animate(t)
-    {
-        window.requestAnimationFrame(this.animate.bind(this));
-
-        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight );
-
-        this.circle.draw(this.ctx, this.stageWidth, this.stageHeight);
-    }
+function handleTitleClick() {
+    title.innerText = "OK, Title clicked";
 }
 
-window.onload = () => {
-    new App();
-};
+function handleMouseEnter() {
+    title.innerText = "Mouse is here, click me";
+}
+
+function handleMouseLeave() {
+    title.innerText = "Don't leave me";
+}
+
+title.addEventListener("click", handleTitleClick);
+title.addEventListener("mouseenter", handleMouseEnter);
+title.addEventListener("mouseleave", handleMouseLeave);
