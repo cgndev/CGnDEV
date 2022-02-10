@@ -9,8 +9,9 @@
 </head>
 <body>
     <script type="module">
-        import * as THREE from 'https://cdn.skypack.dev/three@r137';
-
+        import * as THREE from 'https://cdn.skypack.dev/three'; 
+    </script>
+    <script>
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -20,6 +21,7 @@
         camera.lookAt(0, 0, 0);
 
         const scene = new THREE.Scene();
+
     </script>
 </body>
 </html>
