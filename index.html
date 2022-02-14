@@ -5,6 +5,15 @@
 		<title>My first three.js app</title>
 		<style>
 			body { margin: 0; }
+			#info {
+				color: white;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display: block;
+			}
 		</style>
 	</head>
 	<body>
@@ -15,27 +24,44 @@
 			document.body.appendChild( renderer.domElement );
 
 			const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
-			camera.position.set( 0, 0, 100 );
+			camera.position.set( 0, 5, 10 );
 			camera.lookAt( 0, 0, 0 );
 
 			const scene = new THREE.Scene();
 
-			const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+			const lineMaterial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
 
-			const points = [];
-			points.push( new THREE.Vector3( -10, 0, 0, ) );
-			points.push( new THREE.Vector3( 0, 10, 0 ) );
-			points.push( new THREE.Vector3( 10, 0, 0 ) );
+			const linePoints = [];
+			linePoints.push( new THREE.Vector3( -10, 0, 0 ) );
+			linePoints.push( new THREE.Vector3( 0, 10, 0 ) );
+			linePoints.push( new THREE.Vector3( 10, 0, 0 ) );
+			linePoints.push( new THREE.Vector3( -10, 0, 0 ) );
 
-			const geometry = new THREE.BufferGeometry().setFromPoints( points );
+			const lineGeometry = new THREE.BufferGeometry().setFromPoints( linePoints );
 
-			const line = new THREE.Line( geometry, material );
-			
+			const line = new THREE.Line( lineGeometry, lineMaterial );
+
+			const cubeGeometry = new THREE.BoxGeometry();
+			const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0x1133FF } );
+			const cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+
+			const light = new THREE.PointLight( 0xff0000, 50, 100 );
+			light.position.set( 0, 50, -50 );
+
+
+			scene.add( cube );
 			scene.add( line );
+			scene.add( light );
+			scene.add( new THREE.AmbientLight( 0x888888 ) );
 
 
 			function animate() {
 				requestAnimationFrame( animate );
+
+				line.rotation.x += 0.01;
+				line.rotation.y += 0.01;
+
+				cube.rotation.y += 0.01;
 
 				renderer.render( scene, camera );
 			};
@@ -44,7 +70,7 @@
 		
 		</script>
 
-		<div id="info">Description</div>
-		
+		<div id="info">My Three.js Playground</div>
+
 	</body>
 </html>
