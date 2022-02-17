@@ -68,7 +68,7 @@ function main() {
         const canvas = renderer.domElement;
         const clientWidth = canvas.clientWidth;
         const clientHeight = canvas.clientHeight;
-        const needResize = canvas.width !== clientWidth || canvas.height !== cleintHeight;
+        const needResize = canvas.width !== clientWidth || canvas.height !== clientHeight;
         
         if ( needResize ) {
             renderer.setSize( clientWidth, clientHeight, false );
