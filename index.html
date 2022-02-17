@@ -1,76 +1,106 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-			#info {
-				color: white;
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				z-index: 100;
-				display: block;
-			}
-		</style>
-	</head>
-	<body>
-		<script src="js/three.js"></script>
-		<script>
-			const renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGnDEV</title>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+        #c {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
 
-			const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
-			camera.position.set( 0, 5, 10 );
-			camera.lookAt( 0, 0, 0 );
+</head>
+<body>
+    <canvas id="c"></canvas>
+</body>
+<script type="module">
+import * as THREE from 'https://cdn.skypack.dev/three@0.137.5';
 
-			const scene = new THREE.Scene();
+function main() {
+    const canvas = document.querySelector( '#c' );
+    const renderer = new THREE.WebGLRenderer( {canvas} );
 
-			const lineMaterial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    const fov = 45;
+    const aspect = 2;
+    const near = 0.1;
+    const far = 10;
+    const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
+    camera.position.z = 5;
 
-			const linePoints = [];
-			linePoints.push( new THREE.Vector3( -10, 0, 0 ) );
-			linePoints.push( new THREE.Vector3( 0, 10, 0 ) );
-			linePoints.push( new THREE.Vector3( 10, 0, 0 ) );
-			linePoints.push( new THREE.Vector3( -10, 0, 0 ) );
+    const scene = new THREE.Scene();
 
-			const lineGeometry = new THREE.BufferGeometry().setFromPoints( linePoints );
-
-			const line = new THREE.Line( lineGeometry, lineMaterial );
-
-			const cubeGeometry = new THREE.BoxGeometry();
-			const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0x1133FF } );
-			const cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
-
-			const light = new THREE.PointLight( 0xff0000, 50, 100 );
-			light.position.set( 0, 50, -50 );
+    const lightColor = 0xFFFFFF;
+    const lightIntensity = 1;
+    const light = new THREE.DirectionalLight( lightColor, lightIntensity );
+    light.position.set( -1, 2, 4 );
+    scene.add(light);
 
 
-			scene.add( cube );
-			scene.add( line );
-			scene.add( light );
-			scene.add( new THREE.AmbientLight( 0x888888 ) );
+    const boxWidth = 1;
+    const boxHeight = 1;
+    const boxDepth = 1;
+    const boxGeometry = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
 
+    function makeCubeInstance( geometry, color, x ) {
+        const cubeMaterial = new THREE.MeshPhongMaterial( { color });
+        const cubeMesh = new THREE.Mesh( geometry, cubeMaterial );
+        cubeMesh.position.x = x;
+        scene.add( cubeMesh );
 
-			function animate() {
-				requestAnimationFrame( animate );
+        return cubeMesh;
+    }
 
-				line.rotation.x += 0.01;
-				line.rotation.y += 0.01;
+    const cubes = [
+        makeCubeInstance( boxGeometry, 0xF991CC, 0 ),
+        makeCubeInstance( boxGeometry, 0xE2AFDE, -2 ),
+        makeCubeInstance( boxGeometry, 0xD3C2CE, 2 )
+    ];
 
-				cube.rotation.y += 0.01;
+    function resizeRendererToDisplaySize( renderer ) {
+        const canvas = renderer.domElement;
+        const clientWidth = canvas.clientWidth;
+        const clientHeight = canvas.clientHeight;
+        const needResize = canvas.width !== clientWidth || canvas.height !== cleintHeight;
+        
+        if ( needResize ) {
+            renderer.setSize( clientWidth, clientHeight, false );
+        }
 
-				renderer.render( scene, camera );
-			};
+        return needResize;
+    }
 
-			animate();
-		
-		</script>
+    function render(time) {
+        time *= 0.001;
 
-		<div id="info">My Three.js Playground</div>
+        if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+        }
 
-	</body>
+        cubes.forEach( (cube, ndx ) => {
+            const speed = 1 + ndx * 0.1;
+            const rot = time * speed;
+            cube.rotation.x = rot;
+            cube.rotation.y = rot;
+        });
+        
+        renderer.render( scene, camera );
+
+        requestAnimationFrame( render );
+    }   
+    requestAnimationFrame( render );
+}
+
+main();
+
+</script>
 </html>
