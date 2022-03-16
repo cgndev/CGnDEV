@@ -35,163 +35,66 @@ function main() {
     const cameraNear = 0.1;
     const cameraFar = 1000;
     const camera = new THREE.PerspectiveCamera( cameraFov, cameraAspect, cameraNear, cameraFar );
-    camera.position.z = 120;
-    camera.position.y = 1;
-
-    const lightColor = 0xFFFFFF;
-    const lightIntensity = 1;
-    const light = new THREE.DirectionalLight( lightColor, lightIntensity );
-    light.position.set( -1, 2, 4 );
-    scene.add( light );
+    camera.position.set( 0, 50, 0 );
+    camera.up.set( 0, 0, 1 );
+    camera.lookAt( 0, 0, 0 );
+    
+    {
+        const color = 0xFFFFFF;
+        const intensity = 3;
+        const light = new THREE.PointLight( color, intensity );
+        scene.add( light );
+    }
 
     const objects = [];
-    const spread = 15;
+    const solarSystem = new THREE.Object3D(); // !!!
+    scene.add( solarSystem );
+    objects.push( solarSystem );
 
-    function addObject( x, y, obj ) {
-        obj.position.x = x * spread;
-        obj.position.y = y * spread;
+    const radius = 1;
+    const widthSegments = 6;
+    const heightSegments = 6;
+    const sphereGeometry = new THREE.SphereGeometry( radius , widthSegments, heightSegments );
 
-        scene.add( obj );
-        objects.push( obj );
+    // Sun
+    const sunMaterial = new THREE.MeshPhongMaterial( { emissive: 0xFFFF00 });
+    const sunMesh = new THREE.Mesh( sphereGeometry, sunMaterial );
+    sunMesh.scale.set( 5, 5, 5 );
+    solarSystem.add( sunMesh );
+    objects.push( sunMesh );
 
-        // console.log( "오브젝트 추가 성공 ");
+    // Earth root
+    const earthOrbit = new THREE.Object3D();
+    earthOrbit.position.x = 10
+    solarSystem.add( earthOrbit );
+    objects.push( earthOrbit );
 
-    }
-
-    function createMaterial() {
-        const material = new THREE.MeshPhongMaterial( {
-            side: THREE.DoubleSide,
-            flatShading: true,
-            
-        });
-
-        const hue = Math.random();
-        const saturation = 1;
-        const luminance = 0.5;
-        material.color.setHSL( hue, saturation, luminance );
-        // console.log( "재질 생성 성공" );
-        return material;
-    }
-
-    function addLineGeometry( x, y, geometry ) {
-        const material = new THREE.LineBasicMaterial( { color: 0xffffff  });
-        const mesh = new THREE.LineSegments( geometry, material );
-        addObject( x, y, mesh );
-    }
-
-    function addSolidGeometry( x, y, geometry ) {
-        const mesh = new THREE.Mesh( geometry, createMaterial() );
-        addObject( x, y, mesh );
-        // console.log( "솔리드 지오메트리 추가 성공 ");
-    }
+    // Earth
+    const earthMaterial = new THREE.MeshPhongMaterial( { color: 0x2233FF, emissive: 0x112244 });
+    const earthMesh = new THREE.Mesh( sphereGeometry, earthMaterial );
+    earthOrbit.add( earthMesh );
+    objects.push( earthMesh );
 
 
-    // BoxGeometry
-    {
-        const width = 10;
-        const height = 10;
-        const depth = 10;
-        addSolidGeometry( -2, -2, new THREE.BoxGeometry( width, height, depth ) );
+    // Moon root
+    const moonOrbit = new THREE.Object3D();
+    moonOrbit.position.x = 2;
+    earthOrbit.add( moonOrbit );
 
-    }
-    
-    // BoxGeometry with segsments
-    {
-        const width = 10;
-        const height = 10;
-        const depth = 10;
-        const widthSegments = 4;
-        const heightSegments = 4;
-        const depthSegments = 4;
-        addSolidGeometry( -1, -2, new THREE.BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ));
-    }
+    // Moon 
+    const moonMaterial = new THREE.MeshPhongMaterial( { color: 0x888888, emissive: 0x222222 } );
+    const moonMesh = new THREE.Mesh( sphereGeometry, moonMaterial );
+    moonMesh.scale.set( 0.5, 0.5, 0.5 );
+    moonOrbit.add( moonMesh );
+    objects.push( moonMesh );
 
-    // Circle with theta
-    {
-        const radius = 7;
-        const segments = 24;
-        const thetaStart = Math.PI * 0.25;
-        const thetaLength = Math.PI * 1.5;
-        addSolidGeometry( 0, -2, new THREE.CircleGeometry( radius, segments, thetaStart, thetaLength ));
-    }
-
-    // Cone with theta
-    {
-        const radius = 6;
-        const height = 8;
-        const radialSegments = 16;
-        const heightSegments = 4;
-        const openEnded = true;
-        const thetaStart = Math.PI * 0.25;
-        const thetaLength = Math.PI * 1.5;
-        addSolidGeometry( 1, -2, new THREE.ConeGeometry( radius, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength ));
-    }
-
-    // Cylinder
-    {
-        const radiusTop = 4;
-        const radiusBottom = 4;
-        const height = 8;
-        const radialSegments = 12;
-        addSolidGeometry( 2, -2, new THREE.CylinderGeometry( radiusTop, radiusBottom, height, radialSegments ));
-    }
-
-    // Cylinder with theta
-    {
-        const radiusTop = 4;
-        const radiusBottom = 4;
-        const height = 8;
-        const radialSegments = 12;
-        const heightSegments = 2;
-        const openEnded = false;
-        const thetaStart = Math.PI * 0.25;
-        const thetaLength = Math.PI * 1.25;
-        addSolidGeometry( -2, -1, new THREE.CylinderGeometry( radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength ));
-    }
-
-    // DodecahedronGeometry
-    {
-        const radius = 7;
-        addSolidGeometry( -1, -1, new THREE.DodecahedronGeometry( radius ));
-    }
-    
-    // DodecahedronGeometry with detail
-    {
-        const radius = 7;
-        const detail = 2;
-        addSolidGeometry( 0, -1, new THREE.DodecahedronGeometry( radius, detail ));
-    }
-
-    //LatheGeometry
-    {
-        const points = [];
-         
-        for ( let i = 0; i < 10; i++ ) {
-            points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 3 + 3, ( i - 5 ) * 0.8 ));
-        }
-        addSolidGeometry( 1, -1, new THREE.LatheGeometry( points ) );
-    }
-
-    //OctahedronGeometry
-    {
-        const radius = 7;
-        addSolidGeometry( 2, -1, new THREE.OctahedronGeometry( radius ) );
-    }
-
-    //ShapeGeometry
-    {
-        const shape = new THREE.Shape();
-        const x = -2.5;
-        const y = -5;
-        shape.moveTo(x + 2.5, y + 2.5);
-        shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
-        shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
-        shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
-        shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
-        shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
-        shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
-        addSolidGeometry( -2, 0,  new THREE.ShapeGeometry( shape ) );
-    }
+    // AxeHelper 추가
+    objects.forEach( ( node ) => {
+        const axes = new THREE.AxesHelper();
+        axes.material.depthTest = false;
+        axes.renderOrder = 1;
+        node.add( axes );
+    })
 
     function resizeRendererToDisplaySize( renderer ) {
         const canvas = renderer.domElement;
@@ -215,12 +118,16 @@ function main() {
             camera.updateProjectionMatrix();
         }
 
-        objects.forEach( (obj, ndx ) => {
-            const speed = 0.1 + ndx * 0.05;
-            const rot = time * speed;
-            obj.rotation.x = rot;
-            obj.rotation.y = rot;
+        objects.forEach( (obj) => {
+            obj.rotation.y = time;
         })
+
+        // objects.forEach( (obj, ndx ) => {
+        //     const speed = 0.1 + ndx * 0.05;
+        //     const rot = time * speed;
+        //     obj.rotation.x = rot;
+        //     obj.rotation.y = rot;
+        // })
 
         renderer.render( scene, camera );
 
