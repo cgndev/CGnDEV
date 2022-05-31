@@ -4,7 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGnDEV - Three.js Sandbox</title>
+    <title>PyScript</title>
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+</head>
+<body>
+<py-script>
+    print("Hello World!! PyScript")
+</py-script>
+</body>
+</html>
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGnDEV</title>
     <style>
         html, body {
             margin: 0;
@@ -20,10 +43,12 @@
 <body>
     <canvas id = "c"></canvas>    
 </body>
-<script type="module">
-import * as THREE from 'https://cdn.skypack.dev/three@0.137.5';
 
-function main() {
+<script type = "module">
+import * as THREE from "https://cdn.skypack.dev/three@0.140.2";
+
+function main(){
+
     const canvas = document.querySelector( '#c' );
     const renderer = new THREE.WebGLRenderer( {canvas} );
 
@@ -35,66 +60,46 @@ function main() {
     const cameraNear = 0.1;
     const cameraFar = 1000;
     const camera = new THREE.PerspectiveCamera( cameraFov, cameraAspect, cameraNear, cameraFar );
-    camera.position.set( 0, 50, 0 );
-    camera.up.set( 0, 0, 1 );
-    camera.lookAt( 0, 0, 0 );
-    
-    {
-        const color = 0xFFFFFF;
-        const intensity = 3;
-        const light = new THREE.PointLight( color, intensity );
-        scene.add( light );
-    }
+    camera.position.z = 5;
+    camera.position.y = 1;
+
+    const lightColor = 0xFFFFFF;
+    const lightIntensity = 1;
+    const light = new THREE.DirectionalLight( lightColor, lightIntensity );
+    light.position.set( -1, 2, 4 );
+    scene.add( light );
 
     const objects = [];
-    const solarSystem = new THREE.Object3D(); // !!!
-    scene.add( solarSystem );
-    objects.push( solarSystem );
 
-    const radius = 1;
-    const widthSegments = 6;
-    const heightSegments = 6;
-    const sphereGeometry = new THREE.SphereGeometry( radius , widthSegments, heightSegments );
+    // const boxWidth = 1;
+    // const boxHeight = 1;
+    // const boxDepth = 1;
+    // const boxGeometry = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
+    // const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0xE2AFDE } );
+    // const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterial );
+    // scene.add( cubeMesh );
 
-    // Sun
-    const sunMaterial = new THREE.MeshPhongMaterial( { emissive: 0xFFFF00 });
-    const sunMesh = new THREE.Mesh( sphereGeometry, sunMaterial );
-    sunMesh.scale.set( 5, 5, 5 );
-    solarSystem.add( sunMesh );
-    objects.push( sunMesh );
+    const loader = new THREE.TextureLoader();
 
-    // Earth root
-    const earthOrbit = new THREE.Object3D();
-    earthOrbit.position.x = 10
-    solarSystem.add( earthOrbit );
-    objects.push( earthOrbit );
+    const boxWidth = 1;
+    const boxHeight = 1;
+    const boxGeometry = new THREE.BoxGeometry( boxWidth, boxHeight );
+    // const cubeMaterialWithTexture = new THREE.MeshBasicMaterial( {
+    //     map: loader.load('resources/images/wall.jpg')
+    // });
 
-    // Earth
-    const earthMaterial = new THREE.MeshPhongMaterial( { color: 0x2233FF, emissive: 0x112244 });
-    const earthMesh = new THREE.Mesh( sphereGeometry, earthMaterial );
-    earthOrbit.add( earthMesh );
-    objects.push( earthMesh );
+    const cubeMaterialsWithTex = [
+        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-1.jpg' )}),
+        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-2.jpg' )}),
+        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-3.jpg' )}),
+        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-4.jpg' )}),
+        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-5.jpg' )}),
+        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-6.jpg' )})
+    ];
 
-
-    // Moon root
-    const moonOrbit = new THREE.Object3D();
-    moonOrbit.position.x = 2;
-    earthOrbit.add( moonOrbit );
-
-    // Moon 
-    const moonMaterial = new THREE.MeshPhongMaterial( { color: 0x888888, emissive: 0x222222 } );
-    const moonMesh = new THREE.Mesh( sphereGeometry, moonMaterial );
-    moonMesh.scale.set( 0.5, 0.5, 0.5 );
-    moonOrbit.add( moonMesh );
-    objects.push( moonMesh );
-
-    // AxeHelper 추가
-    objects.forEach( ( node ) => {
-        const axes = new THREE.AxesHelper();
-        axes.material.depthTest = false;
-        axes.renderOrder = 1;
-        node.add( axes );
-    })
+    const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterialsWithTex );
+    scene.add( cubeMesh );
+    objects.push( cubeMesh );
 
     function resizeRendererToDisplaySize( renderer ) {
         const canvas = renderer.domElement;
@@ -105,12 +110,19 @@ function main() {
         if ( needResize ) {
             renderer.setSize( clientWidth, clientHeight, false );
         }
-        
+
         return needResize;
-    }   
-    
+    }
+
     function render( time ) {
         time *= 0.001;
+
+        objects.forEach( ( obj, ndx ) => {
+            const speed = 0.2 + ndx * 0.1;
+            const rot = time * speed;
+            obj.rotation.x = rot;
+            obj.rotation.y = rot;
+        });
 
         if( resizeRendererToDisplaySize( renderer )) {
             const canvas = renderer.domElement;
@@ -118,16 +130,7 @@ function main() {
             camera.updateProjectionMatrix();
         }
 
-        objects.forEach( (obj) => {
-            obj.rotation.y = time;
-        })
-
-        // objects.forEach( (obj, ndx ) => {
-        //     const speed = 0.1 + ndx * 0.05;
-        //     const rot = time * speed;
-        //     obj.rotation.x = rot;
-        //     obj.rotation.y = rot;
-        // })
+        
 
         renderer.render( scene, camera );
 
@@ -135,12 +138,10 @@ function main() {
     }
 
     requestAnimationFrame( render );
-
 }
 
-main();
 
+main();
 </script>
 
-</html>
-
+</html> -->
