@@ -4,36 +4,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PyScript</title>
-    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
-    
-</head>
-
-<body>
-    <py-script src="./py/main.py"></py-script>
-    <main class="container">
-        <div>
-            <input type="number" id="number_input"  min="1" max="50" placeholder="Guess a number between 1 and 50" />
-            <button id="add_todo" pys-onClick="play_game">Guess</button>
-        </div>
-        <h1 id="result"></h1>
-    </main>
-</body>
-</html>
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CGnDEV</title>
     <style>
         html, body {
@@ -51,30 +21,51 @@
     <canvas id = "c"></canvas>    
 </body>
 
+<script async src="https://unpkg.com/es-module-shims@1.5.5/dist/es-module-shims.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "three" : "https://unpkg.com/three@0.140.2/build/three.module.js",
+            "threeOrbitControls" : "https://unpkg.com/three@0.140.2/examples/jsm/controls/OrbitControls.js",
+            "gui" : "https://cdn.jsdelivr.net/npm/lil-gui@0.16/+esm"
+        }
+    }
+</script>
 <script type = "module">
-import * as THREE from "https://cdn.skypack.dev/three@0.140.2";
+import * as THREE from "three";
+import { OrbitControls } from "threeOrbitControls";
+
+import GUI from "gui";
 
 function main(){
 
     const canvas = document.querySelector( '#c' );
     const renderer = new THREE.WebGLRenderer( {canvas} );
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x000000 );
-
     const cameraFov = 40;
     const cameraAspect = 2;
     const cameraNear = 0.1;
-    const cameraFar = 1000;
+    const cameraFar = 100;
     const camera = new THREE.PerspectiveCamera( cameraFov, cameraAspect, cameraNear, cameraFar );
-    camera.position.z = 5;
-    camera.position.y = 1;
+    camera.position.set( 0, 10, 20 );
+    
 
+    
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0x000000 );
+
+    
     const lightColor = 0xFFFFFF;
     const lightIntensity = 1;
     const light = new THREE.DirectionalLight( lightColor, lightIntensity );
     light.position.set( -1, 2, 4 );
     scene.add( light );
+
+    const controls = new OrbitControls( camera, canvas );
+    controls.target.set( 0, 5, 0 );
+    controls.update();
+
+
 
     const objects = [];
 
@@ -82,7 +73,7 @@ function main(){
     // const boxHeight = 1;
     // const boxDepth = 1;
     // const boxGeometry = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
-    // const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0xE2AFDE } );
+    // const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0xE2AFDE } );N
     // const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterial );
     // scene.add( cubeMesh );
 
@@ -95,18 +86,41 @@ function main(){
     //     map: loader.load('resources/images/wall.jpg')
     // });
 
-    const cubeMaterialsWithTex = [
-        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-1.jpg' )}),
-        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-2.jpg' )}),
-        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-3.jpg' )}),
-        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-4.jpg' )}),
-        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-5.jpg' )}),
-        new THREE.MeshBasicMaterial({ map: loader.load( 'resources/images/flower-6.jpg' )})
-    ];
+    const texture = loader.load( 'resources/images/wall.jpg' );
+    const cubeMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+    });
 
-    const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterialsWithTex );
+    const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterial );
     scene.add( cubeMesh );
     objects.push( cubeMesh );
+
+    const wrapModes = {
+    'ClampToEdgeWrapping': THREE.ClampToEdgeWrapping,
+    'RepeatWrapping': THREE.RepeatWrapping,
+    'MirroredRepeatWrapping': THREE.MirroredRepeatWrapping,
+    };
+ 
+
+    function updateTexture() {
+        texture.needsUpdate = true;
+    }
+
+    const gui = new GUI();
+    gui.add(new StringToNumberHelper(texture, 'wrapS'), 'value', wrapModes)
+        .name('texture.wrapS')
+        .onChange(updateTexture);
+    gui.add(new StringToNumberHelper(texture, 'wrapT'), 'value', wrapModes)
+        .name('texture.wrapT')
+        .onChange(updateTexture);
+    gui.add(texture.repeat, 'x', 0, 5, .01).name('texture.repeat.x');
+    gui.add(texture.repeat, 'y', 0, 5, .01).name('texture.repeat.y');
+    gui.add(texture.offset, 'x', -2, 2, .01).name('texture.offset.x');
+    gui.add(texture.offset, 'y', -2, 2, .01).name('texture.offset.y');
+    gui.add(texture.center, 'x', -.5, 1.5, .01).name('texture.center.x');
+    gui.add(texture.center, 'y', -.5, 1.5, .01).name('texture.center.y');
+    gui.add(new DegRadHelper(texture, 'rotation'), 'value', -360, 360)
+        .name('texture.rotation')
 
     function resizeRendererToDisplaySize( renderer ) {
         const canvas = renderer.domElement;
@@ -148,7 +162,35 @@ function main(){
 }
 
 
+class DegRadHelper {
+    constructor( obj, prop ) {
+        this.obj = obj;
+        this.prop = prop;
+    }
+
+    get value() {
+        return THREE.MathUtils.radToDeg( this.obj[this.prop]);
+    }
+    set value(v) {
+        this.obj[this.prop] = THREE.MathUtils.degToRad(v);
+    }
+}
+
+class StringToNumberHelper {
+    constructor( obj, prop ) {
+        this.obj = obj;
+        this.prop = prop;
+    }
+
+    get value() {
+        return this.obj[this.prop];
+    }
+    set value(v) {
+        this.obj[this.prop] = parseFloat(v);
+    }
+}
+
 main();
 </script>
 
-</html> -->
+</html>

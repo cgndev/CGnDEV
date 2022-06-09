@@ -22,9 +22,22 @@
         <canvas id="c"></canvas>
     </body>
 
-<script type="module">
 
-import * as THREE from 'https://cdn.skypack.dev/three@0.140.2';
+<script async src="https://unpkg.com/es-module-shims@1.5.5/dist/es-module-shims.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "three" : "https://unpkg.com/three@0.140.2/build/three.module.js",
+            "threeOrbitControls" : "https://unpkg.com/three@0.140.2/examples/jsm/controls/OrbitControls.js",
+            "gui" : "https://cdn.jsdelivr.net/npm/lil-gui@0.16/+esm"
+        }
+    }
+</script>
+<script type = "module">
+import * as THREE from "three";
+import { OrbitControls } from "threeOrbitControls";
+
+import GUI from "gui";
 
 function main() {
     const canvas = document.querySelector( '#c' );
@@ -42,19 +55,23 @@ function main() {
     camera.position.z = 5;
     camera.position.y = 1;
 
-    const lightColor = 0xFFFFFF;
-    const lightIntensity = 1;
-    const light = new THREE.DirectionalLight( lightColor, lightIntensity );
-    light.position.set( -1, 2, 4 );
-    scene.add( light );
+    {
+        const lightColor = 0xFFFFFF;
+        const lightIntensity = 1;
+        const light = new THREE.DirectionalLight( lightColor, lightIntensity );
+        light.position.set( -1, 2, 4 );
+        scene.add( light );
+    }
     
-    const boxWidth = 1;
-    const boxHeight = 1;
-    const boxDepth = 1;
-    const boxGeometry = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
-    const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0xE2AFDE });
-    const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterial );
-    scene.add( cubeMesh );
+    {
+        const boxWidth = 1;
+        const boxHeight = 1;
+        const boxDepth = 1;
+        const boxGeometry = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
+        const cubeMaterial = new THREE.MeshPhongMaterial( { color: 0xE2AFDE });
+        const cubeMesh = new THREE.Mesh( boxGeometry, cubeMaterial );
+        scene.add( cubeMesh );
+    }
 
 
     function resizeRendererToDisplaySize( renderer ) {
