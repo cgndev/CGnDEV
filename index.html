@@ -1,11 +1,52 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-        <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-    </head>
-    <body>
-        <py-script>
-            print('Hello World')
-        </py-script>
-    </body>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start</title>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+        #c {
+            width: 100%;
+            height: 70%;
+        }
+    </style>
+
+    <!--
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    -->
+
+
+    <script>
+        window.__MyVar = "Kang";
+    </script>
+</head>
+
+<body>
+
+    <canvas class="webgl"></canvas>
+
+    <script async src = "https://unpkg.com/es-module-shims@1.5.5/dist/es-module-shims.js"></script>
+    <script type = "importmap">
+        {
+            "imports": {
+                "three" : "https://unpkg.com/three@0.140.2/build/three.module.js",
+                "threeOrbitControls" : "https://unpkg.com/three@0.140.2/examples/jsm/controls/OrbitControls.js",
+                "gui" : "https://cdn.jsdelivr.net/npm/lil-gui@0.16/+esm"
+            }
+        }
+    </script>
+
+    <script type = "module" src = "./three/threeMain.js"></script>
+    <!-- <py-script src = "./py/main.py"></py-script> -->
+
+
+    
+</body>
+
 </html>
