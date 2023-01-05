@@ -13,11 +13,11 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0xFF0000 } );
+const material = new THREE.MeshBasicMaterial( { color: 0xFF4592 } );
 const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
 
-camera.position.set( 0, 0, 5 );
+camera.position.set( 0, 0, 2 );
 
 function animate() {
     requestAnimationFrame( animate );
