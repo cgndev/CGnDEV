@@ -1,2 +1,2 @@
 # About CGnDEV
-Kang Byungchul's web page.
+My web page.
