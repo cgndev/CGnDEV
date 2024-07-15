@@ -79,6 +79,6 @@ function render() {
 
     controls.update();
 
-    effect.render( scene, camera );
+    //effect.render( scene, camera );
 
 }
