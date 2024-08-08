@@ -57,7 +57,7 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize( window.innerWidth, window.innerHeight );
-    //effect.setSize( window.innerWidth, window.innerHeight );
+    effect.setSize( window.innerWidth, window.innerHeight );
 
 }
 
@@ -79,6 +79,6 @@ function render() {
 
     controls.update();
 
-    //effect.render( scene, camera );
+    effect.render( scene, camera );
 
 }
