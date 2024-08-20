@@ -23,3 +23,6 @@ function animate()
     renderer.render( scene, camera );
 }
 
+// todo 1 : 새로운 BoxGeometry를 만든다. 단,  기존 핑크 큐브보다 살짝 크고, 면 세그먼트를 더 쪼갠다.
+// todo 2 : 버텍스 정보들을 불러와서 Points 를 만든다.
+// todo 3 : Points에 PointMaterial 을 적용(같은 색)해서 같이 회전하도록한다.
