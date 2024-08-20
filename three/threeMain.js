@@ -1,84 +1,25 @@
 import * as THREE from 'three';
 
-import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
-import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-let camera, controls, scene, renderer, effect;
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setAnimationLoop( animate );
+document.body.appendChild( renderer.domElement );
 
-let sphere, plane, pointLight1;;
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( { color: 0xff4592 } );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
 
-const startTime = Date.now();
+camera.position.z = 5;
 
-init();
-animate();
+function animate()
+{
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
 
-function init() {
-
-    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 3000 );
-    camera.position.set( 200, 150, 1000 );
-
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0, 0, 0 );
-
-    pointLight1 = new THREE.PointLight( 0xFFFFFF, 1 );
-    pointLight1.position.set( 500, 500, 500 );
-    scene.add( pointLight1 );
-
-    const pointLight2 = new THREE.PointLight( 0xFFFFFF,  0.05 );
-    pointLight2.position.set( -500, -500, -500 );
-    scene.add( pointLight2 );
-
-    sphere = new THREE.Mesh( new THREE.SphereGeometry( 200, 20, 100 ), new THREE.MeshPhongMaterial( {flatShading: true } ) );
-    scene.add( sphere );
-
-    plane = new THREE.Mesh( new THREE.PlaneGeometry( 5000, 5000 ), new THREE.MeshPhongMaterial( { color: 0xe0e0e0 } ) );
-    plane.position.set( 0, -200, 0 );
-    plane.rotation.x = -Math.PI / 2;
-    scene.add( plane );
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-    effect = new AsciiEffect( renderer, ' .:-+*=%@#', { invert: true } );
-    effect.setSize( innerWidth, innerHeight );
-    effect.domElement.style.color = 'white';
-    effect.domElement.style.backgroundColor = 'black';
-    document.body.appendChild( effect.domElement );
-
-    controls = new TrackballControls( camera, effect.domElement );
-    
-    window.addEventListener( 'resize', onWindowResize );
-
+    renderer.render( scene, camera );
 }
 
-function onWindowResize() {
-    
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    effect.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-function animate() {
-
-    requestAnimationFrame( animate );
-
-    render();
-
-}
-
-function render() {
-
-    const timer = Date.now() - startTime;
-
-    sphere.position.y = Math.abs( Math.sin( timer * 0.002 ) ) * 150;
-    sphere.rotation.x = timer * 0.0003;
-    sphere.rotation.z = timer * 0.0002;
-
-    controls.update();
-
-    effect.render( scene, camera );
-
-}
