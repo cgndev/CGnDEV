@@ -12,9 +12,16 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0xff4592 } );
 const mesh = new THREE.Mesh( geometry, material );
 
-scene.add( mesh );
+// scene.add( mesh );
 
 camera.position.z = 5;
+
+const points = geometry.attributes.position;
+const pointsGeometry = new THREE.BufferGeometry().setFromPoints( points );
+const pointsMaterial = new THREE.PointsMaterial( { size: 15, color: 0xff4592, vertexColors: true } );
+const particles = new THREE.Points( pointsGeometry, pointsMaterial );
+
+scene.add( particles );
 
 window.addEventListener( 'resize', onWindowResize );
 
@@ -34,10 +41,3 @@ function onWindowResize() {
 }
 
 
-
-// const points = geometry.attributes.position;
-// const pointsGeometry = new THREE.BufferGeometry().setFromPoints( points );
-// const pointsMaterial = new THREE.PointsMaterial( { size: 0.02, color: 0xff4592 } );
-// const particles = new THREE.Points( pointsGeometry, pointsMaterial );
-
-// //scene.add( particles );
