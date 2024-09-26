@@ -2,5 +2,25 @@
     "cSpell.words": [
         "Phong",
         "wireframe"
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#ff78b0",
+        "activityBar.background": "#ff78b0",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#358000",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#ff78b0",
+        "statusBar.background": "#ff4592",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#ff1274",
+        "statusBarItem.remoteBackground": "#ff4592",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#ff4592",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#ff459299",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#ff4592"
 }
